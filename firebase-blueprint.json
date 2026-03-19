@@ -1,0 +1,48 @@
+{
+  "entities": {
+    "machines": {
+      "title": "Máquina",
+      "description": "Máquina de produção de papelão",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nome da máquina (TL1, TL2, TCY)" },
+        "currentProduction": { "type": "number", "description": "Produção atual em m²/h" },
+        "goalProduction": { "type": "number", "description": "Meta de produção em m²/h" },
+        "status": { "type": "string", "enum": ["Produzindo", "Parada", "Ajuste", "Setup"] },
+        "lastStatusChange": { "type": "string", "format": "date-time", "description": "Data/hora da última mudança de status" }
+      },
+      "required": ["name", "status"]
+    },
+    "events": {
+      "title": "Evento de Produção",
+      "description": "Registro de atividade ou parada de máquina",
+      "type": "object",
+      "properties": {
+        "machineId": { "type": "string", "description": "ID da máquina" },
+        "machineName": { "type": "string", "description": "Nome da máquina" },
+        "type": { "type": "string", "enum": ["Produção", "Parada", "Ajuste", "Setup"] },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "m2Produced": { "type": "number", "description": "Metros quadrados produzidos" },
+        "observation": { "type": "string" }
+      },
+      "required": ["machineId", "type", "startTime"]
+    },
+    "goals": {
+      "title": "Metas Globais",
+      "description": "Metas de produção por período",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["day", "month", "year"] },
+        "target": { "type": "number", "description": "Meta em m²" },
+        "current": { "type": "number", "description": "Produção acumulada em m²" }
+      },
+      "required": ["type", "target"]
+    }
+  },
+  "firestore": {
+    "/machines": { "schema": "machines", "description": "Estado atual das máquinas" },
+    "/events": { "schema": "events", "description": "Histórico de eventos de produção" },
+    "/goals": { "schema": "goals", "description": "Metas de produção globais" }
+  }
+}
